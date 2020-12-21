@@ -1,10 +1,8 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-    >
+    <v-navigation-drawer v-model="drawer" app>
       <!--  -->
+      <barra-menu></barra-menu>
     </v-navigation-drawer>
 
     <v-app-bar app>
@@ -14,15 +12,19 @@
     </v-app-bar>
 
     <v-main>
-      <!--  -->
+      <v-container>
+        <router-view> </router-view>
+      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import BarraMenu from "./components/BarraMenu.vue";
+import HelloWorld from "./components/HelloWorld";
 
 export default {
+  components: { BarraMenu },
   data: () => ({ drawer: null }),
 };
 </script>

@@ -13,21 +13,21 @@
     <div class="carousel-inner">
       <div class="carousel-item active">
         <img
-          src="../assets/bannerInvestigacion.jpg"
+          src="../assets/bannerInvestigacion.jpeg"
           class="d-block w-100"
           alt="Imagen Investigacion"
         />
       </div>
       <div class="carousel-item">
         <img
-          src="../assets/bannerAnalisis.jpg"
+          src="../assets/bannerAnalisis.jpeg"
           class="d-block w-100"
           alt="Imagen Analisis"
         />
       </div>
       <div class="carousel-item">
         <img
-          src="../assets/bannerEstrategia.jpg"
+          src="../assets/bannerEstrategia.jpeg"
           class="d-block w-100"
           alt="Imagen Estrategia"
         />

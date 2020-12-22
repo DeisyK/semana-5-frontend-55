@@ -76,7 +76,7 @@ export default {
       console.log(this.logueo);
       localStorage.removeItem("token");
       this.logueo = false;
-      swal("Terminar Sesion","Has terminado la sesion exitosamente","success")
+      //swal("Terminar Sesion","Has terminado la sesion exitosamente","success")
     },
     iniciarSesion() {
       console.log(this.logueo);

@@ -29,3 +29,11 @@ export default {
   data: () => ({ drawer: null }),
 };
 </script>
+<style>
+  h2 {
+  margin-top: 1%;
+  text-align: center;
+  font-size: 50px;
+  font-weight: bold;
+}
+</style>

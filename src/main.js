@@ -6,9 +6,9 @@ import router from './router'
 import vuetify from './plugins/vuetify';
 
 const base =  axios.create({
-  // baseURL : 'http://localhost:3000/'
+  baseURL : 'http://localhost:3000/'
   // baseURL : 'http://51.195.41.15:81/'
-  baseURL : 'http://missionmarket55.xyz:81/'
+ // baseURL : 'http://missionmarket55.xyz:81/'
 })
 Vue.prototype.$http = base;
 

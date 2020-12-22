@@ -1,26 +1,30 @@
 <template>
-  <div>
+  <div id="servicios">
     <div>
       <h2>Servicios</h2>
     </div>
     <div>
-      <v-container fluid> </v-container>
       <div class="container-fluid">
-        <div class="row row-cols-1 row-cols-md-3 g-5">
-          <div v-for="(articulo, index) of Articulos" :key="index">
-            <div class="col">
+        <div class="row row-cols-1 row-cols-md-3 g-1">
+          <div v-for="(categoria, id) of categorias" :key="id">
+            <div class="col" :class="colorCuadro(id)">
               <div class="card text-white bg-dark">
-                <v-card>
-                  <v-card-title>
-                    {{ articulo.nombre }}
-                  </v-card-title>
-                  <div class="d-flex justify-content-center p-2">
-                    <v-img src="../assets/logo.png"></v-img>
+                <v-col>
+                  {{ categoria.nombre }}
+                  <div v-for="(articulo, id) of articulos" :key="id">
+                    <v-card v-if="articulo.categoriaId == categoria.id">
+                      <v-card-title>
+                        {{ articulo.nombre }}
+                      </v-card-title>
+                      <div class="d-flex justify-content-center p-2">
+                        <v-img v-bind:src="getImagen(articulo)" ></v-img>>
+                      </div>
+                      <v-card-text>
+                        {{ articulo.descripcion }}
+                      </v-card-text>
+                    </v-card>
                   </div>
-                  <v-card-text>
-                    {{ articulo.descripcion }}
-                  </v-card-text>
-                </v-card>
+                </v-col>
               </div>
             </div>
           </div>
@@ -33,23 +37,17 @@
 export default {
   props: ["member"],
   data: () => ({
-    Articulos: [],
-    articuloMuestra: {
-      codigo: "",
-      nombre: "",
-      descripcion: "",
-      categoriaId: "",
-      estado: 1,
-    },
+    articulos: [],
+    categorias: [],
   }),
   created() {
-    this.agregarArticulos();
+    this.agregar();
   },
   methods: {
     async list() {
       try {
         let response = await this.$http.get("api/articulo/list");
-        this.Articulos = response.data;
+        this.articulos = response.data;
         // swal("Exito!", "Se han listado los articulos correctamente", "success");
         console.log(response.request.responseURL);
       } catch (error) {
@@ -57,8 +55,37 @@ export default {
         return error;
       }
     },
-    agregarArticulos() {
+    async listCategoria() {
+      try {
+        let response = await this.$http.get("api/categoria/list");
+        this.categorias = response.data;
+        // swal("Exito!", "Se han listado los articulos correctamente", "success");
+        console.log(response.request.responseURL);
+      } catch (error) {
+        swal("Oops!", "Algo salio Mal!", "error");
+        return error;
+      }
+    },
+    agregar() {
       this.list();
+      this.listCategoria();
+    },
+    colorCuadro(id) {
+      if (id == 0) {
+        return "bg-warning";
+      } else if (id == 1) {
+        return "bg-info";
+      } else {
+        return "bg-danger";
+      }
+    },
+    getImagen(articulo) {
+        if (articulo.urlImagen==null) {
+            return 'https://image.freepik.com/vector-gratis/concepto-landing-page-fallo-tecnico_23-2148249256.jpg'
+        }else {
+            return articulo.urlImagen
+        }
+      
     },
   },
 };

@@ -26,7 +26,7 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col cols="12" >
+                    <v-col cols="12">
                       <v-text-field
                         v-model="editedItem.nombre"
                         label="Nombre"
@@ -35,7 +35,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" >
+                    <v-col cols="12">
                       <v-text-field
                         v-model="editedItem.email"
                         label="Email"
@@ -44,7 +44,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" >
+                    <v-col cols="12">
                       <v-text-field
                         v-model="editedItem.rol"
                         label="Rol"
@@ -52,7 +52,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" >
+                    <v-col cols="12">
                       <v-text-field
                         v-model="editedItem.password"
                         label="Contraseña"
@@ -60,7 +60,6 @@
                       ></v-text-field>
                     </v-col>
                   </v-row>
-                  
                 </v-container>
               </v-card-text>
 
@@ -78,7 +77,8 @@
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="headline"
-                >Estas seguro que deseas cambiar el estado {{estadoObjeto()}} del usuario</v-card-title
+                >Estas seguro que deseas cambiar el estado
+                {{ estadoObjeto() }} del usuario</v-card-title
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -121,7 +121,7 @@ export default {
       { text: "Nombre", value: "nombre" },
       { text: "Email", value: "email" },
       { text: "Rol", value: "rol" },
-      { text: "Contraseña", value: "password"},
+      { text: "Contraseña", value: "password" },
       { text: "Estado", value: "estado" },
       { text: "Acciones", value: "actions", sortable: false },
     ],
@@ -131,7 +131,7 @@ export default {
       nombre: "",
       email: "",
       rol: "",
-      password:"",
+      password: "",
       estado: 1,
       id: 1,
     },
@@ -166,15 +166,15 @@ export default {
   methods: {
     async list() {
       try {
-        let response = await this.$http.get('api/usuario/list')
+        let response = await this.$http.get("api/usuario/list");
         this.usuario = response.data;
-        console.log(response.request.responseURL)
-        this.cargando=false
-        // swal("Exito!", "Se han listado los usuarios correctamente", "success"); 
+        console.log(response.request.responseURL);
+        this.cargando = false;
+        // swal("Exito!", "Se han listado los usuarios correctamente", "success");
       } catch (error) {
         swal("Oops!", "Algo salio Mal!", "error");
-        return error;          
-      } 
+        return error;
+      }
     },
     initialize() {
       this.list();
@@ -192,25 +192,28 @@ export default {
     },
 
     async deleteItemConfirm() {
-       if (this.editedItem.estado === 1) {
+      if (this.editedItem.estado === 1) {
         // axios.put(this.backend + "api/usuario/deactivate", {id: this.editedItem.id});
         try {
-          let response = await this.$http.put('api/usuario/deactivate',{id: this.editedItem.id})
-          swal("Exito!", "Usuario DESACTIVADO", "success"); 
+          let response = await this.$http.put("api/usuario/deactivate", {
+            id: this.editedItem.id,
+          });
+          swal("Exito!", "Usuario DESACTIVADO", "success");
         } catch (error) {
           swal("Oops!", "Algo salio Mal!", "error");
-          return error;          
-       }
-
+          return error;
+        }
       } else {
         // axios.put(this.backend + "api/usuario/activate", {id: this.editedItem.id});
         try {
-          let response = await this.$http.put('api/usuario/activate',{id: this.editedItem.id})
-          swal("Exito!", "Usuario ACTIVADO", "success"); 
+          let response = await this.$http.put("api/usuario/activate", {
+            id: this.editedItem.id,
+          });
+          swal("Exito!", "Usuario ACTIVADO", "success");
         } catch (error) {
           swal("Oops!", "Algo salio Mal!", "error");
-          return error;          
-       }
+          return error;
+        }
       }
       this.closeDelete();
     },
@@ -244,13 +247,16 @@ export default {
         };
         // axios.put(this.backend + "api/usuario/update", objetoBusqueda);
         try {
-          let response = await this.$http.put('api/usuario/update',objetoBusqueda)
-          swal("Exito!", "Usuario ACTUALIZADO", "success"); 
+          let response = await this.$http.put(
+            "api/usuario/update",
+            objetoBusqueda
+          );
+          swal("Exito!", "Usuario ACTUALIZADO", "success");
         } catch (error) {
           swal("Oops!", "Algo salio Mal!", "error");
-          return error;          
-       }
-        //Object.assign(this.usuario[this.editedIndex], this.editedItem);      
+          return error;
+        }
+        //Object.assign(this.usuario[this.editedIndex], this.editedItem);
       } else {
         let objetoBusqueda = {
           nombre: this.editedItem.nombre,
@@ -261,25 +267,27 @@ export default {
         };
         // axios.post(this.backend + "api/usuario/add", objetoBusqueda);
         try {
-          let response = await this.$http.post('api/usuario/add',objetoBusqueda)
-          swal("Exito!", "Usuario AGREGADO", "success"); 
+          let response = await this.$http.post(
+            "api/usuario/add",
+            objetoBusqueda
+          );
+          swal("Exito!", "Usuario AGREGADO", "success");
         } catch (error) {
           swal("Oops!", "Algo salio Mal!", "error");
-          return error;          
-       }
+          return error;
+        }
         this.usuario.push(this.editedItem);
-      }  
-      this.list();    
+      }
+      this.list();
       this.close();
     },
-    estadoObjeto(){
-      if (this.editedItem.estado ===1 ){
-        return "ACTIVADO"
+    estadoObjeto() {
+      if (this.editedItem.estado === 1) {
+        return "ACTIVADO";
+      } else {
+        return "DESACTIVADO";
       }
-      else {
-        return "DESACTIVADO"
-      }
-    },    
+    },
   },
 };
 </script>

@@ -13,6 +13,7 @@ const base =  axios.create({
 Vue.prototype.$http = base;
 
 Vue.config.productionTip = false
+
 /*
 const axiosConfig ={
   baseURL: 'http://localhost:3000/',

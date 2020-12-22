@@ -169,6 +169,7 @@ export default {
         let response = await this.$http.get('api/usuario/list')
         this.usuario = response.data;
         console.log(response.request.responseURL)
+        this.cargando=false
         // swal("Exito!", "Se han listado los usuarios correctamente", "success"); 
       } catch (error) {
         swal("Oops!", "Algo salio Mal!", "error");

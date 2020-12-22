@@ -169,6 +169,7 @@ export default {
         this.articulo = response.data;
         // swal("Exito!", "Se han listado los articulos correctamente", "success"); 
         console.log(response.request.responseURL)
+        this.cargando=false
       } catch (error) {
         swal("Oops!", "Algo salio Mal!", "error");
         return error;          

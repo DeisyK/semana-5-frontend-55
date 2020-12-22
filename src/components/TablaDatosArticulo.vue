@@ -5,8 +5,8 @@
       :items="articulo"
       sort-by="id"
       class="elevation-1"
-       :loading="barraCarga"
-        loading-text="Cargando Articulos... Espera por favor"
+       :loading="cargando"
+        loading-text="Cargando articulos... Espera por favor"
     >
       <template v-slot:top>
         <v-toolbar flat>
@@ -34,7 +34,7 @@
                         :rules="[reglas.campoVacio()]"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="12" sm="8">
                       <v-text-field
                         v-model="editedItem.nombre"
                         label="Nombre"
@@ -43,16 +43,18 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
+                    <v-col cols="12">
+                      <v-textarea
                         v-model="editedItem.descripcion"
                         label="Descripcion"
                         :rules="[reglas.campoVacio(), reglas.descripcionDesborde(250)]"
                         counter="250"
                         auto-grow
-                      ></v-text-field>
-                    </v-col>                    
-                    <v-col cols="12" sm="6" md="4">
+                      ></v-textarea>
+                    </v-col>     
+                  </v-row>
+                  <v-row>               
+                    <v-col cols="12">
                       <v-text-field
                         v-model="editedItem.categoriaId"
                         label="Categoria"                        
@@ -76,7 +78,7 @@
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="headline"
-                >Estas seguro que deseas eliminar el articulo</v-card-title
+                >Estas seguro que deseas cambiar el estado {{estadoObjeto()}} del articulo</v-card-title
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -103,13 +105,11 @@
   </div>
 </template>
 <script>
-import axios from "axios"
 export default {
   data: () => ({
     dialog: false,
-    backend:'http://localhost:3000/',
     dialogDelete: false,
-    barraCarga: true,
+    cargando: true,
     reglas:{      
       campoVacio: len => v => v.length != 0 || `Campo Vacio: el campo no debe estar vacio`,
       descripcionDesborde: len => v => v.length < len || `Descripcion Invalida: la descriocion debe ser menor a ${len} caracteres`,
@@ -158,16 +158,15 @@ export default {
   },
 
   created() {
-    this.barraCarga=true;
     this.initialize();
-    this.barraCarga=false;
   },
 
   methods: {
     list(){
-      axios.get(this.backend+'api/articulo/list')
+      this.$axios.get('api/articulo/list')
       .then( (response) => {
-        this.articulo = response.data
+        this.articulo = response.data;
+        this.cargando = false
       })
       .catch(error =>{
         return error
@@ -191,9 +190,9 @@ export default {
 
     deleteItemConfirm() {
       if (this.editedItem.estado === 1) {
-        axios.put(this.backend + "api/articulo/deactivate", {id: this.editedItem.id});
+        this.$axios.put("api/articulo/deactivate", {id: this.editedItem.id});
       } else {
-        axios.put(this.backend + "api/articulo/activate", {id: this.editedItem.id});
+        this.$axios.put("api/articulo/activate", {id: this.editedItem.id});
       }
       this.closeDelete();
     },
@@ -225,7 +224,7 @@ export default {
           descripcion: this.editedItem.descripcion,
           id: this.editedItem.id,
         };
-        axios.put(this.backend + "api/articulo/update", objetoBusqueda);
+        this.$axios.put("api/articulo/update", objetoBusqueda);
         Object.assign(this.articulo[this.editedIndex], this.editedItem);
       } else {
         let objetoBusqueda = {
@@ -235,10 +234,19 @@ export default {
           descripcion: this.editedItem.descripcion,
           estado: 1,
         };
-        axios.post(this.backend + "api/articulo/add", objetoBusqueda);
+        this.$axios.post("api/articulo/add", objetoBusqueda);
         this.articulo.push(this.editedItem);
       }
+      this.list();
       this.close();
+    },
+    estadoObjeto(){
+      if (this.editedItem.estado ===1 ){
+        return "acticvado"
+      }
+      else {
+        return "desactivado"
+      }
     },
   },
 };

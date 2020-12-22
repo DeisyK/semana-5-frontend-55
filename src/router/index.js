@@ -25,6 +25,11 @@ const routes = [
     name: 'TablaUsuario',
     component: () => import('../views/TablaUsuario.vue')
   },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue')
+  },
 ]
 
 const router = new VueRouter({

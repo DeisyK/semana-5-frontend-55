@@ -5,7 +5,7 @@
       :items="usuario"
       sort-by="id"
       class="elevation-1"
-      :loading="barraCarga"
+      :loading="cargando"
       loading-text="Cargando usuarios... Espera por favor"
     >
       <template v-slot:top>
@@ -26,7 +26,7 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="12" >
                       <v-text-field
                         v-model="editedItem.nombre"
                         label="Nombre"
@@ -35,7 +35,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="12" >
                       <v-text-field
                         v-model="editedItem.email"
                         label="Email"
@@ -44,7 +44,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="12" >
                       <v-text-field
                         v-model="editedItem.rol"
                         label="Rol"
@@ -52,7 +52,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="12" >
                       <v-text-field
                         v-model="editedItem.password"
                         label="Contraseña"
@@ -105,13 +105,11 @@
   </div>
 </template>
 <script>
-import axios from "axios";
 export default {
   data: () => ({
     dialog: false,
-    backend: "http://localhost:3000/",
     dialogDelete: false,
-    barraCarga: true,
+    cargando: true,
     reglas: {
       campoVacio: (len) => (v) =>
         v.length != 0 || `Campo Vacio: el campo no debe estar vacio`,
@@ -162,17 +160,15 @@ export default {
   },
 
   created() {
-    this.barraCarga = true;
     this.initialize();
-    this.barraCarga = false;
   },
 
   methods: {
     list() {
-      axios
-        .get(this.backend + "api/usuario/list")
+      this.$axios.get("api/usuario/list")
         .then((response) => {
           this.usuario = response.data;
+          this.cargando = false
         })
         .catch((error) => {
           return error;
@@ -195,9 +191,9 @@ export default {
 
     deleteItemConfirm() {
        if (this.editedItem.estado === 1) {
-        axios.put(this.backend + "api/usuario/deactivate", {id: this.editedItem.id});
+        this.$axios.put("api/usuario/deactivate", {id: this.editedItem.id});
       } else {
-        axios.put(this.backend + "api/usuario/activate", {id: this.editedItem.id});
+        this.$axios.put("api/usuario/activate", {id: this.editedItem.id});
       }
       this.closeDelete();
     },
@@ -229,7 +225,7 @@ export default {
           email: this.editedItem.email,
           id: this.editedItem.id,
         };
-        axios.put(this.backend + "api/usuario/update", objetoBusqueda);
+        this.$axios.put("api/usuario/update", objetoBusqueda);
         //Object.assign(this.usuario[this.editedIndex], this.editedItem);      
       } else {
         let objetoBusqueda = {
@@ -239,9 +235,10 @@ export default {
           email: this.editedItem.email,
           estado: 1,
         };
-        axios.post(this.backend + "api/usuario/add", objetoBusqueda);
+        this.$axios.post("api/usuario/add", objetoBusqueda);
         this.usuario.push(this.editedItem);
-      }      
+      }  
+      this.list();    
       this.close();
     },
     estadoObjeto(){

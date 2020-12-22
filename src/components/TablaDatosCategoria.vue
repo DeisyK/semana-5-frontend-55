@@ -5,7 +5,7 @@
       :items="categoria"
       sort-by="id"
       class="elevation-1"
-      :loading="barraCarga"
+      :loading="cargando"
       loading-text="Cargando categorias... Espera por favor"
     >
       <template v-slot:top>
@@ -70,7 +70,7 @@
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="headline"
-                >Estas seguro que deseas cambiar el estado de la categoria</v-card-title
+                >Estas seguro que deseas cambiar el estado {{estadoObjeto()}} de la categoria</v-card-title
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -101,9 +101,8 @@ import axios from "axios";
 export default {
   data: () => ({
     dialog: false,
-    backend: "http://localhost:3000/",
     dialogDelete: false,
-    barraCarga: true,
+    cargando: true,
     botonGuardar: false,
     iconoCambio:"",
     reglas: {
@@ -150,17 +149,15 @@ export default {
   },
 
   created() {
-    this.barraCarga = true;
     this.initialize();
-    this.barraCarga = false;
   },
 
   methods: {
     list() {
-      axios
-        .get(this.backend + "api/categoria/list")
+      this.$axios.get("api/categoria/list")
         .then((response) => {
           this.categoria = response.data;
+          this.cargando = false
         })
         .catch((error) => {
           return error;
@@ -183,9 +180,9 @@ export default {
 
     deleteItemConfirm() {
       if (this.editedItem.estado === 1) {
-        axios.put(this.backend + "api/categoria/deactivate", {id: this.editedItem.id});
+        this.$axios.put("api/categoria/deactivate", {id: this.editedItem.id});
       } else {
-        axios.put(this.backend + "api/categoria/activate", {id: this.editedItem.id});
+        this.$axios.put("api/categoria/activate", {id: this.editedItem.id});
       }
       this.closeDelete();
     },
@@ -216,18 +213,26 @@ export default {
           descripcion: this.editedItem.descripcion,
           id: this.editedItem.id,
         };
-        axios.put(this.backend + "api/categoria/update", objetoBusqueda);
-        //Object.assign(this.categoria[this.editedIndex], this.editedItem);
+        this.$axios.put("api/categoria/update", objetoBusqueda);
       } else {
         let objetoBusqueda = {
           nombre: this.editedItem.nombre,
           descripcion: this.editedItem.descripcion,
           estado: 1,
         };
-        axios.post(this.backend + "api/categoria/add", objetoBusqueda);
+        this.$axios.post("api/categoria/add", objetoBusqueda);
         this.categoria.push(this.editedItem);
       }
+      this.list();
       this.close();
+    },
+    estadoObjeto(){
+      if (this.editedItem.estado ===1 ){
+        return "acticvado"
+      }
+      else {
+        return "desactivado"
+      }
     },
   },
 };

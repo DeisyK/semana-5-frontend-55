@@ -17,7 +17,7 @@
                         {{ articulo.nombre }}
                       </v-card-title>
                       <div class="d-flex justify-content-center p-2">
-                        <v-img v-bind:src="getImagen(articulo)" ></v-img>>
+                        <v-img v-bind:src="getImagen(articulo)" ></v-img>
                       </div>
                       <v-card-text>
                         {{ articulo.descripcion }}

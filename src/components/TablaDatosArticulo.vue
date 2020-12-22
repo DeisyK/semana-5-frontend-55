@@ -78,7 +78,7 @@
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="headline"
-                >Estas seguro que deseas cambiar el estado {{estadoObjeto()}} del articulo</v-card-title
+                >Estas seguro que deseas {{estadoObjeto()}} el articulo</v-card-title
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -104,6 +104,7 @@
     </v-data-table>
   </div>
 </template>
+
 <script>
 export default {
   data: () => ({
@@ -162,16 +163,16 @@ export default {
   },
 
   methods: {
-    list(){
-      this.$axios.get('api/articulo/list')
-      .then( (response) => {
+    async list(){
+      try {
+        let response = await this.$http.get('api/articulo/list')
         this.articulo = response.data;
-        this.cargando = false
-      })
-      .catch(error =>{
-        return error
-      })
-      
+        // swal("Exito!", "Se han listado los articulos correctamente", "success"); 
+        console.log(response.request.responseURL)
+      } catch (error) {
+        swal("Oops!", "Algo salio Mal!", "error");
+        return error;          
+      }       
     },
     initialize() {
       this.list()
@@ -188,11 +189,25 @@ export default {
       this.dialogDelete = true;
     },
 
-    deleteItemConfirm() {
+    async deleteItemConfirm() {
       if (this.editedItem.estado === 1) {
-        this.$axios.put("api/articulo/deactivate", {id: this.editedItem.id});
+        // axios.put(this.backend + "api/articulo/deactivate", {id: this.editedItem.id});
+        try {
+          let response = await this.$http.put('api/articulo/deactivate',{id: this.editedItem.id})
+          swal("Exito!", "Articulo DESACTIVADO", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+       }
       } else {
-        this.$axios.put("api/articulo/activate", {id: this.editedItem.id});
+        // axios.put(this.backend + "api/articulo/activate", {id: this.editedItem.id});
+        try {
+          let response = await this.$http.put('api/articulo/activate',{id: this.editedItem.id})
+          swal("Exito!", "Articulo ACTIVADO", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+        }
       }
       this.closeDelete();
     },
@@ -215,7 +230,7 @@ export default {
       this.list()
     },
 
-    save() {
+    async save() {
       if (this.editedIndex > -1) {
         let objetoBusqueda = {
           categoriaId: this.editedItem.categoriaId,
@@ -223,8 +238,17 @@ export default {
           nombre: this.editedItem.nombre,
           descripcion: this.editedItem.descripcion,
           id: this.editedItem.id,
+          
         };
-        this.$axios.put("api/articulo/update", objetoBusqueda);
+        // axios.put(this.backend + "api/articulo/update", objetoBusqueda);
+        try {
+          let response = await this.$http.put('api/articulo/update',objetoBusqueda)
+          swal("Exito!", "Articulo ACTUALIZADO", "success"); 
+          console.log(this.editedItem.categoriaId)
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+        }
         Object.assign(this.articulo[this.editedIndex], this.editedItem);
       } else {
         let objetoBusqueda = {
@@ -234,20 +258,28 @@ export default {
           descripcion: this.editedItem.descripcion,
           estado: 1,
         };
-        this.$axios.post("api/articulo/add", objetoBusqueda);
+        // axios.post(this.backend + "api/articulo/add", objetoBusqueda);
+        try {
+          let response = await this.$http.post('api/articulo/add',objetoBusqueda)
+          swal("Exito!", "Articulo AGREGADO", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+        }
         this.articulo.push(this.editedItem);
       }
       this.list();
       this.close();
     },
-    estadoObjeto(){
-      if (this.editedItem.estado ===1 ){
-        return "acticvado"
-      }
-      else {
-        return "desactivado"
-      }
-    },
+  estadoObjeto(){
+  if (this.editedItem.estado ===1 ){
+    return "DESACTIVAR"
+  }
+  else {
+    return "ACTIVAR"
+  }
+  },
+
   },
 };
 </script>

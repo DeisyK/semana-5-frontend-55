@@ -164,15 +164,16 @@ export default {
   },
 
   methods: {
-    list() {
-      this.$axios.get("api/usuario/list")
-        .then((response) => {
-          this.usuario = response.data;
-          this.cargando = false
-        })
-        .catch((error) => {
-          return error;
-        });
+    async list() {
+      try {
+        let response = await this.$http.get('api/usuario/list')
+        this.usuario = response.data;
+        console.log(response.request.responseURL)
+        // swal("Exito!", "Se han listado los usuarios correctamente", "success"); 
+      } catch (error) {
+        swal("Oops!", "Algo salio Mal!", "error");
+        return error;          
+      } 
     },
     initialize() {
       this.list();
@@ -189,11 +190,26 @@ export default {
       this.dialogDelete = true;
     },
 
-    deleteItemConfirm() {
+    async deleteItemConfirm() {
        if (this.editedItem.estado === 1) {
-        this.$axios.put("api/usuario/deactivate", {id: this.editedItem.id});
+        // axios.put(this.backend + "api/usuario/deactivate", {id: this.editedItem.id});
+        try {
+          let response = await this.$http.put('api/usuario/deactivate',{id: this.editedItem.id})
+          swal("Exito!", "Usuario DESACTIVADO", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+       }
+
       } else {
-        this.$axios.put("api/usuario/activate", {id: this.editedItem.id});
+        // axios.put(this.backend + "api/usuario/activate", {id: this.editedItem.id});
+        try {
+          let response = await this.$http.put('api/usuario/activate',{id: this.editedItem.id})
+          swal("Exito!", "Usuario ACTIVADO", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+       }
       }
       this.closeDelete();
     },
@@ -216,7 +232,7 @@ export default {
       this.list();
     },
 
-    save() {
+    async save() {
       if (this.editedIndex > -1) {
         let objetoBusqueda = {
           nombre: this.editedItem.nombre,
@@ -225,7 +241,14 @@ export default {
           email: this.editedItem.email,
           id: this.editedItem.id,
         };
-        this.$axios.put("api/usuario/update", objetoBusqueda);
+        // axios.put(this.backend + "api/usuario/update", objetoBusqueda);
+        try {
+          let response = await this.$http.put('api/usuario/update',objetoBusqueda)
+          swal("Exito!", "Usuario ACTUALIZADO", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+       }
         //Object.assign(this.usuario[this.editedIndex], this.editedItem);      
       } else {
         let objetoBusqueda = {
@@ -235,7 +258,14 @@ export default {
           email: this.editedItem.email,
           estado: 1,
         };
-        this.$axios.post("api/usuario/add", objetoBusqueda);
+        // axios.post(this.backend + "api/usuario/add", objetoBusqueda);
+        try {
+          let response = await this.$http.post('api/usuario/add',objetoBusqueda)
+          swal("Exito!", "Usuario AGREGADO", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+       }
         this.usuario.push(this.editedItem);
       }  
       this.list();    
@@ -243,10 +273,10 @@ export default {
     },
     estadoObjeto(){
       if (this.editedItem.estado ===1 ){
-        return "acticvado"
+        return "ACTIVADO"
       }
       else {
-        return "desactivado"
+        return "DESACTIVADO"
       }
     },    
   },

@@ -1,10 +1,10 @@
 <template>
-    <table-datos-categoria></table-datos-categoria>
+    <tabla-datos-categoria></tabla-datos-categoria>
 </template>
 <script>
-import TableDatosCategoria from '../components/TableDatosCategoria.vue'
+import TablaDatosCategoria from '../components/TablaDatosCategoria.vue'
 export default {
-  components: { TableDatosCategoria },
+  components: { TablaDatosCategoria },
         
 }
 </script>

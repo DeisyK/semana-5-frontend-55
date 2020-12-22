@@ -2,7 +2,7 @@
   <div>
     <v-card class="mx-auto" width="300">
       <v-list>
-        <v-list-item to="Home">
+        <v-list-item to="/">
           <v-list-item-avatar>
             <img src="../assets/logoMissionMarket55.png" />
           </v-list-item-avatar>
@@ -44,9 +44,9 @@
 <script>
 export default {
   data: () => ({
-    usuario: [["Perfil", "mdi-card-account-details",'TablaUsuario']],
+    usuario: [["Perfil", "mdi-card-account-details",'Perfil']],
     cruds: [
-      ["Usuarios", "mdi-human-edit", "Home"],
+      ["Usuarios", "mdi-human-edit", "TablaUsuario"],
       ["Categorias", "mdi-notebook-edit", "TablaCategoria"],
       ["Articulos", "mdi-file-document-edit", "TablaArticulo"],
     ],

@@ -14,7 +14,17 @@ const routes = [
     path: '/tablacategoria',
     name: 'TablaCategoria',
     component: () => import('../views/TablaCategoria.vue')
-  }
+  },
+  {
+    path: '/tablaarticulo',
+    name: 'TablaArticulo',
+    component: () => import('../views/TablaArticulo.vue')
+  },
+  {
+    path: '/tablausuario',
+    name: 'TablaUsuario',
+    component: () => import('../views/TablaUsuario.vue')
+  },
 ]
 
 const router = new VueRouter({

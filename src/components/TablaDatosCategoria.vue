@@ -2,9 +2,11 @@
   <div>
     <v-data-table
       :headers="headers"
-      :items="desserts"
-      sort-by="calories"
+      :items="categoria"
+      sort-by="id"
       class="elevation-1"
+      :loading="barraCarga"
+      loading-text="Cargando categorias... Espera por favor"
     >
       <template v-slot:top>
         <v-toolbar flat>
@@ -21,35 +23,30 @@
               <v-card-title>
                 <span class="headline">{{ formTitle }}</span>
               </v-card-title>
-
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.nombre"
-                        label="Id"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="12">
                       <v-text-field
                         v-model="editedItem.nombre"
                         label="Nombre"
+                        :rules="[reglas.campoVacio()]"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-textarea
                         v-model="editedItem.descripcion"
                         label="Descripcion"
-                      ></v-text-field>
+                        auto-grow
+                        counter="250"
+                        :rules="[
+                          reglas.campoVacio(),
+                          reglas.descripcionDesborde(250),
+                        ]"
+                      ></v-textarea>
                     </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.estado"
-                        label="Estado"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4"> </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -59,7 +56,12 @@
                 <v-btn color="orange darken-1" text @click="close">
                   Cancelar
                 </v-btn>
-                <v-btn color="orange darken-1" text @click="save">
+                <v-btn
+                  color="orange darken-1"
+                  text
+                  @click="save"
+                  :disabled="botonGuardar"
+                >
                   Guardar
                 </v-btn>
               </v-card-actions>
@@ -68,7 +70,7 @@
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="headline"
-                >Estas seguro que deseas eliminar el producto</v-card-title
+                >Estas seguro que deseas cambiar el estado de la categoria</v-card-title
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -84,7 +86,7 @@
           </v-dialog>
         </v-toolbar>
       </template>
-      <template v-slot:item.actions="{ item }">
+      <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
@@ -95,10 +97,20 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data: () => ({
     dialog: false,
+    backend: "http://localhost:3000/",
     dialogDelete: false,
+    barraCarga: true,
+    botonGuardar: false,
+    iconoCambio:"",
+    reglas: {
+      campoVacio: (len) => (v) => v.length != 0 || `Campo Vacio: el campo no debe estar vacio`,
+      descripcionDesborde: (len) => (v) => v.length < len ||
+        `Descripcion Invalida: la descriocion debe ser menor a ${len} caracteres`,
+    },
     headers: [
       { text: "Id", value: "id", align: "star" },
       { text: "Nombre", value: "nombre" },
@@ -106,13 +118,15 @@ export default {
       { text: "Estado", value: "estado" },
       { text: "Acciones", value: "actions", sortable: false },
     ],
-    desserts: [],
+    categoria: [],
     editedIndex: -1,
     editedItem: {
       nombre: "",
       descripcion: "",
+      id: 1,
       estado: 1,
     },
+
     defaultItem: {
       nombre: "",
       descripcion: "",
@@ -136,34 +150,43 @@ export default {
   },
 
   created() {
+    this.barraCarga = true;
     this.initialize();
+    this.barraCarga = false;
   },
 
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          nombre: "Frozen Yogurt",
-          descripcion: "159",
-          estado: 1,
-        },
-      ];
+    list() {
+      axios
+        .get(this.backend + "api/categoria/list")
+        .then((response) => {
+          this.categoria = response.data;
+        })
+        .catch((error) => {
+          return error;
+        });
     },
-
+    initialize() {
+      this.list();
+    },
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.categoria.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.categoria.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
+      if (this.editedItem.estado === 1) {
+        axios.put(this.backend + "api/categoria/deactivate", {id: this.editedItem.id});
+      } else {
+        axios.put(this.backend + "api/categoria/activate", {id: this.editedItem.id});
+      }
       this.closeDelete();
     },
 
@@ -171,8 +194,10 @@ export default {
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
+
         this.editedIndex = -1;
       });
+      this.list();
     },
 
     closeDelete() {
@@ -181,13 +206,26 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+      this.list();
     },
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+        let objetoBusqueda = {
+          nombre: this.editedItem.nombre,
+          descripcion: this.editedItem.descripcion,
+          id: this.editedItem.id,
+        };
+        axios.put(this.backend + "api/categoria/update", objetoBusqueda);
+        //Object.assign(this.categoria[this.editedIndex], this.editedItem);
       } else {
-        this.desserts.push(this.editedItem);
+        let objetoBusqueda = {
+          nombre: this.editedItem.nombre,
+          descripcion: this.editedItem.descripcion,
+          estado: 1,
+        };
+        axios.post(this.backend + "api/categoria/add", objetoBusqueda);
+        this.categoria.push(this.editedItem);
       }
       this.close();
     },

@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import Axios from 'axios';
 import BarraMenu from "./components/BarraMenu.vue";
 import HelloWorld from "./components/HelloWorld";
 

@@ -96,12 +96,15 @@
     </v-data-table>
   </div>
 </template>
+
 <script>
 import axios from "axios";
+import swal from 'sweetalert';
 export default {
   data: () => ({
     dialog: false,
-    backend: "http://localhost:3000/",
+    // backend: "http://localhost:3000/",
+    // backend: "http://51.195.41.15:81/",
     dialogDelete: false,
     barraCarga: true,
     botonGuardar: false,
@@ -156,15 +159,24 @@ export default {
   },
 
   methods: {
-    list() {
-      axios
-        .get(this.backend + "api/categoria/list")
-        .then((response) => {
-          this.categoria = response.data;
-        })
-        .catch((error) => {
-          return error;
-        });
+    async list() {
+      // axios
+      //   .get(this.backend + "api/categoria/list")
+      //   .then((response) => {
+      //     this.categoria = response.data;
+      //   })
+      //   .catch((error) => {
+      //     return error;
+      //   });
+      try {
+        let response = await this.$http.get('api/categoria/list')
+        this.categoria = response.data;
+        // swal("Exito!", "Se han listado las categorias correctamente", "success"); 
+        console.log(response.request.responseURL)
+      } catch (error) {
+        swal("Oops!", "Algo salio Mal!", "error");
+        return error;          
+      }
     },
     initialize() {
       this.list();
@@ -181,11 +193,27 @@ export default {
       this.dialogDelete = true;
     },
 
-    deleteItemConfirm() {
+    async deleteItemConfirm() {
       if (this.editedItem.estado === 1) {
-        axios.put(this.backend + "api/categoria/deactivate", {id: this.editedItem.id});
+        // axios.put(this.backend + "api/categoria/deactivate", {id: this.editedItem.id});
+        try {
+          let response = await this.$http.put('api/categoria/deactivate',{id: this.editedItem.id})
+          this.articulo = response.data;
+          swal("Exito!", "Se ha DESACTIVADO la categoria correctamente", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+        }
       } else {
-        axios.put(this.backend + "api/categoria/activate", {id: this.editedItem.id});
+        // axios.put(this.backend + "api/categoria/activate", {id: this.editedItem.id});
+        try {
+          let response = await this.$http.put('api/categoria/activate',{id: this.editedItem.id})
+          this.articulo = response.data;
+          swal("Exito!", "Se ha ACTIVADO la categoria correctamente", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+        }
       }
       this.closeDelete();
     },
@@ -209,14 +237,23 @@ export default {
       this.list();
     },
 
-    save() {
+    async save() {
       if (this.editedIndex > -1) {
         let objetoBusqueda = {
           nombre: this.editedItem.nombre,
           descripcion: this.editedItem.descripcion,
           id: this.editedItem.id,
         };
-        axios.put(this.backend + "api/categoria/update", objetoBusqueda);
+        // axios.put(this.backend + "api/categoria/update", objetoBusqueda);
+        try {
+          let response = await this.$http.put('api/categoria/update',objetoBusqueda)
+          this.articulo = response.data;
+          swal("Exito!", "Se ha ACTUALIZADO la categoria correctamente", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+        }
+
         //Object.assign(this.categoria[this.editedIndex], this.editedItem);
       } else {
         let objetoBusqueda = {
@@ -224,7 +261,15 @@ export default {
           descripcion: this.editedItem.descripcion,
           estado: 1,
         };
-        axios.post(this.backend + "api/categoria/add", objetoBusqueda);
+        // axios.post(this.backend + "api/categoria/add", objetoBusqueda);
+        try {
+          let response = await this.$http.post('api/categoria/add',objetoBusqueda)
+          this.articulo = response.data;
+          swal("Exito!", "Se ha AGREGADO la categoria correctamente", "success"); 
+        } catch (error) {
+          swal("Oops!", "Algo salio Mal!", "error");
+          return error;          
+        }
         this.categoria.push(this.editedItem);
       }
       this.close();

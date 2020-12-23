@@ -3,7 +3,14 @@
     <div>
       <h2>Servicios</h2>
     </div>
+    <v-spacer></v-spacer>
     <div>
+      <p>
+        Con 5M5 puedes aumentar tus ventas, hacer que tus productos sean
+        reutilizables, rentables y que no se queden en el olvido, haremos que tu
+        y tus clientes tengan una mejor experiencia, todo en tiempo real y desde
+        la comodidad de tu casa y/o tu oficina.
+      </p>
       <div class="container-fluid">
         <div class="row row-cols-1 row-cols-md-3 g-1">
           <div v-for="(categoria, id) of categorias" :key="id">
@@ -17,7 +24,7 @@
                         {{ articulo.nombre }}
                       </v-card-title>
                       <div class="d-flex justify-content-center p-2">
-                        <v-img v-bind:src="getImagen(articulo)" ></v-img>
+                        <v-img v-bind:src="getImagen(articulo)"></v-img>
                       </div>
                       <v-card-text>
                         {{ articulo.descripcion }}
@@ -38,9 +45,9 @@ export default {
   props: ["member"],
   data: () => ({
     articulos: [],
-    articulosInvestigacion:[],
-    articulosAnalisis:[],
-    articulosEstrategia:[],
+    articulosInvestigacion: [],
+    articulosAnalisis: [],
+    articulosEstrategia: [],
     categorias: [],
   }),
   created() {
@@ -69,29 +76,29 @@ export default {
         return error;
       }
     },
-    listInvestigacion(){
-      for (articulo in this.articulos){
-        if (articulo.categoriaId==1) {
-          this.articulosInvestigacion.push(articulo)
+    listInvestigacion() {
+      for (articulo in this.articulos) {
+        if (articulo.categoriaId == 1) {
+          this.articulosInvestigacion.push(articulo);
         }
       }
-      console.log(this.articulosInvestigacion)
+      console.log(this.articulosInvestigacion);
     },
-    listAnalisis(){
-      for (articulo in this.articulos){
-        if (articulo.categoriaId==2) {
-          this.articulosAnalisis.push(articulo)
+    listAnalisis() {
+      for (articulo in this.articulos) {
+        if (articulo.categoriaId == 2) {
+          this.articulosAnalisis.push(articulo);
         }
       }
-      console.log(this.articulosAnalisis)
+      console.log(this.articulosAnalisis);
     },
-    listEstrategia(){
-      for (articulo in this.articulos){
-        if (articulo.categoriaId==3) {
-          this.articulosEstrategia.push(articulo)
+    listEstrategia() {
+      for (articulo in this.articulos) {
+        if (articulo.categoriaId == 3) {
+          this.articulosEstrategia.push(articulo);
         }
       }
-      console.log(this.articulosEstrategia)
+      console.log(this.articulosEstrategia);
     },
     agregar() {
       this.list();
@@ -110,12 +117,11 @@ export default {
       }
     },
     getImagen(articulo) {
-        if (articulo.urlImagen==null) {
-            return 'https://image.freepik.com/vector-gratis/concepto-landing-page-fallo-tecnico_23-2148249256.jpg'
-        }else {
-            return articulo.urlImagen
-        }
-      
+      if (articulo.urlImagen == null) {
+        return "https://image.freepik.com/vector-gratis/concepto-landing-page-fallo-tecnico_23-2148249256.jpg";
+      } else {
+        return articulo.urlImagen;
+      }
     },
   },
 };

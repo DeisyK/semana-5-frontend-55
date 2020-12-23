@@ -32,7 +32,7 @@
             <v-spacer></v-spacer>
             <v-btn color="orange darken-1" text @click="borrar"> Borrar </v-btn>
             <v-btn color="orange darken-1" text @click="iniciarSesion">
-              Iniciar Session
+              Iniciar Sesion
             </v-btn>
           </v-card-actions>
         </v-card>

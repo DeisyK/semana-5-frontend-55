@@ -38,6 +38,9 @@ export default {
   props: ["member"],
   data: () => ({
     articulos: [],
+    articulosInvestigacion:[],
+    articulosAnalisis:[],
+    articulosEstrategia:[],
     categorias: [],
   }),
   created() {
@@ -66,9 +69,36 @@ export default {
         return error;
       }
     },
+    listInvestigacion(){
+      for (articulo in this.articulos){
+        if (articulo.categoriaId==1) {
+          this.articulosInvestigacion.push(articulo)
+        }
+      }
+      console.log(this.articulosInvestigacion)
+    },
+    listAnalisis(){
+      for (articulo in this.articulos){
+        if (articulo.categoriaId==2) {
+          this.articulosAnalisis.push(articulo)
+        }
+      }
+      console.log(this.articulosAnalisis)
+    },
+    listEstrategia(){
+      for (articulo in this.articulos){
+        if (articulo.categoriaId==3) {
+          this.articulosEstrategia.push(articulo)
+        }
+      }
+      console.log(this.articulosEstrategia)
+    },
     agregar() {
       this.list();
       this.listCategoria();
+      this.listInvestigacion();
+      this.listAnalisis();
+      this.listEstrategia();
     },
     colorCuadro(id) {
       if (id == 0) {

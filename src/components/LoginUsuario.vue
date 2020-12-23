@@ -3,7 +3,7 @@
     <v-parallax src="../assets/fondoLogin.jpeg" height="100%">
       <v-container class="login">
         <v-card max-width="500px" class="row g-3 align-items-center">
-          <v-card-title > Iniciar session </v-card-title>
+          <v-card-title > Iniciar Sesion </v-card-title>
           <v-card-text>
             <v-container>
               <v-row>

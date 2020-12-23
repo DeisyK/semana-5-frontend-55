@@ -55,10 +55,13 @@
                   </v-row>
                   <v-row>               
                     <v-col cols="12">
-                      <v-text-field
+                      <v-select
                         v-model="editedItem.categoriaId"
-                        label="Categoria"                        
-                      ></v-text-field>
+                        label="Categoria"    
+                        :items="categorias"
+                        item-text="nombre"
+                        item-value="id"                 
+                      ></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -126,6 +129,7 @@ export default {
       { text: "Acciones", value: "actions", sortable: false },
     ],
     articulo: [],
+    categorias: [],
     editedIndex: -1,
     editedItem: {
       codigo: "",
@@ -175,8 +179,20 @@ export default {
         return error;          
       }       
     },
+    async listCategoria() {
+      try {
+        let response = await this.$http.get("api/categoria/list");
+        this.categorias = response.data;
+        // swal("Exito!", "Se han listado los articulos correctamente", "success");
+        console.log(response.request.responseURL);
+      } catch (error) {
+        swal("Oops!", "Algo salio Mal!", "error");
+        return error;
+      }
+    },
     initialize() {
       this.list()
+      this.listCategoria();
     },
     editItem(item) {
       this.editedIndex = this.articulo.indexOf(item);

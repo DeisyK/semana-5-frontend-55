@@ -61,7 +61,7 @@ export default {
       {
         codigo:3,
         nombre:"Andres Castaño",
-        descripcion:"Vivo en Cali. Tecnologo Electrónico. Mi comida favorita la lasagna. Apasionado por el cine y la investigación. Mi peliculas favorita Interstellar. Mi nickname Mich.",
+        descripcion:"Vivo en Cali. Tecnologo Electrónico. Mi comida favorita la lasagna. Apasionado por el cine y la investigación. Mi pelicula favorita Interstellar. Mi nickname Mich.",
         rol:"Desarrollador Backend",
         image:"https://i.ibb.co/qxdLFkQ/icon3.jpg"
     },

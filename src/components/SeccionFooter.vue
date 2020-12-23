@@ -46,7 +46,7 @@
           </p>
       </v-col>
   
-      <v-col class="orange lighten-2 py-4 text-center white--text" cols="12">
+      <v-col class="orange py-4 text-center white--text" cols="12">
         {{ new Date().getFullYear() }} — <strong>UTP</strong>
       </v-col>
     </v-row>

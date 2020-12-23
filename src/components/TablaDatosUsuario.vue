@@ -45,10 +45,13 @@
                   </v-row>
                   <v-row>
                     <v-col cols="12">
-                      <v-text-field
+                      <v-select
                         v-model="editedItem.rol"
                         label="Rol"
-                      ></v-text-field>
+                        :items="roles"
+                        item-text="nombre"
+                        item-value="nombre"
+                      ></v-select>
                     </v-col>
                   </v-row>
                   <v-row>
@@ -126,6 +129,12 @@ export default {
       { text: "Acciones", value: "actions", sortable: false },
     ],
     usuario: [],
+    roles: [
+        {nombre: "Administrador",},
+        {nombre: "Vendedor",},
+        {nombre: "Almacenero",},
+        {nombre: "Cliente",},      
+    ],
     editedIndex: -1,
     editedItem: {
       nombre: "",
